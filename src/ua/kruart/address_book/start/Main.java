@@ -14,7 +14,7 @@ public class Main extends Application {
         primaryStage.setTitle("FXML Welcome");
         primaryStage.setMinHeight(550);
         primaryStage.setMinWidth(400);
-        primaryStage.setScene(new Scene(root, 350, 400));
+        primaryStage.setScene(new Scene(root, 350, 275));
         primaryStage.show();
     }
 
