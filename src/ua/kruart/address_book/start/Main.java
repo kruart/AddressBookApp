@@ -1,4 +1,4 @@
-package sample;
+package ua.kruart.address_book.start;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../fxml/main.fxml"));
         primaryStage.setTitle("FXML Welcome");
         primaryStage.setMinHeight(550);
         primaryStage.setMinWidth(400);
