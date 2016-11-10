@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class InMemoryAddressBookRepository implements AddressBookRepository {
 
-    private List<Person> personList = new ArrayList<>();
+    public List<Person> personList = fillTestData();
 
     @Override
     public void add(Person person) {
@@ -29,7 +29,18 @@ public class InMemoryAddressBookRepository implements AddressBookRepository {
         personList.remove(person);
     }
 
-    public List<Person> getPersonList() {
-        return personList;
+    public List<Person> fillTestData() {
+        List<Person> persons = new ArrayList<>();
+        persons.add(new Person("John Doe", "3399390"));
+        persons.add(new Person("Michael Schumacher", "3400355"));
+        persons.add(new Person("Alessandro Del Piero", "4343553"));
+        persons.add(new Person("Paolo Dibala", "5782265"));
+        persons.add(new Person("Antonio Conte", "2526483"));
+        persons.add(new Person("Frank Lampard", "1568933"));
+        persons.add(new Person("Andrea Pirlo", "5477700"));
+        persons.add(new Person("Clarence Seedorf ", "5599330"));
+
+        return persons;
     }
+
 }
