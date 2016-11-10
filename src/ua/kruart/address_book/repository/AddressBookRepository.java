@@ -1,4 +1,4 @@
-package ua.kruart.address_book.service;
+package ua.kruart.address_book.repository;
 
 import ua.kruart.address_book.model.Person;
 
@@ -7,7 +7,7 @@ import ua.kruart.address_book.model.Person;
  *
  * @author kruart
  */
-public interface AddressBookService {
+public interface AddressBookRepository {
 
     void add(Person person);
 
