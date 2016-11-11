@@ -1,5 +1,6 @@
 package ua.kruart.address_book.controller;
 
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,11 +44,16 @@ public class MainController {
         columnName.setCellValueFactory(new PropertyValueFactory<Person, String>("fullName"));
         columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
 
+        repository.getPersonList().addListener(new ListChangeListener<Person>() {
+            @Override
+            public void onChanged(Change<? extends Person> c) {
+                updateCountLabel();
+            }
+        });
+
         repository.fillTestData();
 
         tableAddressBook.setItems(repository.getPersonList());
-
-        updateCountLabel();
     }
 
     private void updateCountLabel() {
