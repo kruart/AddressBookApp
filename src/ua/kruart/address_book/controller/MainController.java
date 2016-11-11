@@ -6,16 +6,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import ua.kruart.address_book.model.Person;
+import ua.kruart.address_book.repository.impls.InMemoryAddressBookRepository;
 
 import java.io.IOException;
 
 public class MainController {
+
+    private InMemoryAddressBookRepository repository = new InMemoryAddressBookRepository();
+
     @FXML
     private Button btnAdd;
     @FXML
@@ -29,7 +32,28 @@ public class MainController {
     @FXML
     private TableView tableAddressBook;
     @FXML
+    private TableColumn<Person, String> columnName;
+    @FXML
+    private TableColumn<Person, String> columnPhone;
+    @FXML
     private Label labelCount;
+
+    @FXML
+    public void initialize() {
+        columnName.setCellValueFactory(new PropertyValueFactory<Person, String>("fullName"));
+        columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
+
+        repository.fillTestData();
+
+        tableAddressBook.setItems(repository.getPersonList());
+
+        updateCountLabel();
+    }
+
+    private void updateCountLabel() {
+        labelCount.setText("Количество записей: " + repository.getPersonList().size());
+    }
+
 
     public void showDialog(ActionEvent actionEvent) {
 
