@@ -29,15 +29,19 @@ public class EditDialogController {
         stage.hide();
     }
 
+    public void actionSave(ActionEvent actionEvent) {
+        person.setPhone(txtPhone.getText());
+        person.setFullName(txtName.getText());
+        actionClose(actionEvent);
+    }
+
     public void setPerson(Person person) {
         this.person = person;
         txtName.setText(person.getFullName());
         txtPhone.setText(person.getPhone());
     }
 
-    public void actionSave(ActionEvent actionEvent) {
-        person.setPhone(txtPhone.getText());
-        person.setFullName(txtName.getText());
-        actionClose(actionEvent);
+    public Person getPerson() {
+        return person;
     }
 }
