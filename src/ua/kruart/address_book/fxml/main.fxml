@@ -19,12 +19,12 @@
                   <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="btnEdit" mnemonicParsing="false" prefWidth="75.0" text="Изменить">
+            <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#showDialog" prefWidth="75.0" text="Изменить">
                <HBox.margin>
                   <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="btnDelete" mnemonicParsing="false" prefWidth="75.0" text="Удалить">
+            <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#showDialog" prefWidth="75.0" text="Удалить">
                <HBox.margin>
                   <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                </HBox.margin>
