@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,8 +19,11 @@ import ua.kruart.address_book.model.Person;
 import ua.kruart.address_book.repository.impls.InMemoryAddressBookRepository;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class MainController {
+public class MainController implements Initializable {
 
     private InMemoryAddressBookRepository repository = new InMemoryAddressBookRepository();
 
@@ -48,13 +52,16 @@ public class MainController {
     private FXMLLoader fxmlLoader = new FXMLLoader();
     private EditDialogController editDialogController;
     private Stage editDialogStage;
+    private ResourceBundle resourceBundle;
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
     }
 
-    @FXML
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resourceBundle = resources;
+
         columnName.setCellValueFactory(new PropertyValueFactory<Person, String>("fullName"));
         columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
         initListeners();
@@ -93,6 +100,7 @@ public class MainController {
         try {
 
             fxmlLoader.setLocation(getClass().getResource("../fxml/edit.fxml"));
+            fxmlLoader.setResources(ResourceBundle.getBundle("ua.kruart.address_book.bundle.locale", new Locale("ua")));
             fxmlEdit = fxmlLoader.load();
             editDialogController = fxmlLoader.getController();
 
@@ -102,7 +110,7 @@ public class MainController {
     }
 
     private void updateCountLabel() {
-        labelCount.setText("Количество записей: " + repository.getPersonList().size());
+        labelCount.setText(resourceBundle.getString("count_contacts") + ": " + repository.getPersonList().size());
     }
 
 
@@ -149,7 +157,7 @@ public class MainController {
 
         if (editDialogStage==null) {
             editDialogStage = new Stage();
-            editDialogStage.setTitle("Редактирование записи");
+            editDialogStage.setTitle(resourceBundle.getString("edit"));
             editDialogStage.setMinHeight(150);
             editDialogStage.setMinWidth(300);
             editDialogStage.setResizable(false);
