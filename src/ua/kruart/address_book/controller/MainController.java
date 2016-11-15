@@ -9,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,11 +16,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 import ua.kruart.address_book.model.Person;
 import ua.kruart.address_book.repository.impls.InMemoryAddressBookRepository;
+import ua.kruart.address_book.utils.DialogManager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -148,29 +147,42 @@ public class MainController implements Initializable {
 
         Person selectedPerson = (Person) tableAddressBook.getSelectionModel().getSelectedItem();
 
-        Window parentWindow = ((Node) actionEvent.getSource()).getScene().getWindow();
-
-        editDialogController.setPerson(selectedPerson);
 
         switch (clickedButton.getId()) {
             case "btnAdd":
                 editDialogController.setPerson(new Person());
                 showDialog();
                 repository.add(editDialogController.getPerson());
+                backupList.add(editDialogController.getPerson());
                 break;
 
             case "btnEdit":
-                editDialogController.setPerson((Person)tableAddressBook.getSelectionModel().getSelectedItem());
+                if(!personIsSelected(selectedPerson)) {
+                    return;
+                }
+                editDialogController.setPerson(selectedPerson);
                 showDialog();
                 break;
 
 
             case "btnDelete":
-                repository.delete((Person)tableAddressBook.getSelectionModel().getSelectedItem());
+                if(!personIsSelected(selectedPerson)) {
+                    return;
+                }
+                repository.delete(selectedPerson);
+                backupList.remove(selectedPerson);
                 break;
 
         }
 
+    }
+
+    private boolean personIsSelected(Person selectedPerson) {
+        if (selectedPerson == null) {
+            DialogManager.showInfoDialog(resourceBundle.getString("error"), resourceBundle.getString("select_person"));
+            return false;
+        }
+        return true;
     }
 
 
