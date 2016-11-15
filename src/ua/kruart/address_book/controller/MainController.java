@@ -1,7 +1,9 @@
 package ua.kruart.address_book.controller;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -58,6 +60,8 @@ public class MainController implements Initializable {
     private Stage editDialogStage;
     private ResourceBundle resourceBundle;
 
+    private ObservableList<Person> backupList;
+
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
     }
@@ -86,6 +90,8 @@ public class MainController implements Initializable {
 
     private void fillData() {
         repository.fillTestData();
+        backupList = FXCollections.observableArrayList();
+        backupList.addAll(repository.getPersonList());
         tableAddressBook.setItems(repository.getPersonList());
     }
 
@@ -182,5 +188,16 @@ public class MainController implements Initializable {
         }
 
       editDialogStage.showAndWait(); // для ожидания закрытия окна
+    }
+
+    public void actionSearch(ActionEvent actionEvent) {
+        repository.getPersonList().clear();
+
+        for (Person person : backupList) {
+            if (person.getFullName().toLowerCase().contains(txtSearch.getText().toLowerCase()) ||
+                    person.getPhone().toLowerCase().contains(txtSearch.getText().toLowerCase())) {
+                repository.getPersonList().add(person);
+            }
+        }
     }
 }
