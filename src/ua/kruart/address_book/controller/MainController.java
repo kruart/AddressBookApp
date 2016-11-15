@@ -1,5 +1,6 @@
 package ua.kruart.address_book.controller;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,10 +16,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 import ua.kruart.address_book.model.Person;
 import ua.kruart.address_book.repository.impls.InMemoryAddressBookRepository;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -38,7 +42,7 @@ public class MainController implements Initializable {
     @FXML
     private Button btnSearch;
     @FXML
-    private TextField txtSearch;
+    private CustomTextField txtSearch;
     @FXML
     private TableView tableAddressBook;
     @FXML
@@ -64,9 +68,20 @@ public class MainController implements Initializable {
 
         columnName.setCellValueFactory(new PropertyValueFactory<Person, String>("fullName"));
         columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
+        setupClearButtonField(txtSearch);
         initListeners();
         fillData();
         initLoader();
+    }
+
+    private void setupClearButtonField(CustomTextField customTextField) {
+        try{
+            Method m = TextFields.class.getDeclaredMethod("setupClearButtonField", TextField.class, ObjectProperty.class);
+            m.setAccessible(true);
+            m.invoke(null, customTextField, customTextField.rightProperty());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillData() {
