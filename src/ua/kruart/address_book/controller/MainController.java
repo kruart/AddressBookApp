@@ -18,17 +18,20 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
+import ua.kruart.address_book.model.Lang;
 import ua.kruart.address_book.model.Person;
 import ua.kruart.address_book.repository.impls.InMemoryAddressBookRepository;
 import ua.kruart.address_book.utils.DialogManager;
+import ua.kruart.address_book.utils.LocaleManager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Observable;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController extends Observable implements Initializable {
 
     private InMemoryAddressBookRepository repository = new InMemoryAddressBookRepository();
 
@@ -52,6 +55,12 @@ public class MainController implements Initializable {
     private TableColumn<Person, String> columnPhone;
     @FXML
     private Label labelCount;
+    @FXML
+    private ComboBox comboLocales;
+
+    private static final String UA_CODE="ua";
+    private static final String RU_CODE="ru";
+    private static final String EN_CODE="en";
 
     private Parent fxmlEdit;
     private FXMLLoader fxmlLoader = new FXMLLoader();
@@ -88,13 +97,35 @@ public class MainController implements Initializable {
     }
 
     private void fillData() {
+        fillTable();
+        fillLangComboBox();
+    }
+
+    private void fillTable() {
         repository.fillTestData();
         backupList = FXCollections.observableArrayList();
         backupList.addAll(repository.getPersonList());
         tableAddressBook.setItems(repository.getPersonList());
     }
 
+    private void fillLangComboBox() {
+        Lang langUA = new Lang(0, UA_CODE, resourceBundle.getString("ua"), LocaleManager.UA_LOCALE);
+        Lang langRU = new Lang(1, RU_CODE, resourceBundle.getString("ru"), LocaleManager.RU_LOCALE);
+        Lang langEN = new Lang(2, EN_CODE, resourceBundle.getString("en"), LocaleManager.EN_LOCALE);
+
+        comboLocales.getItems().add(langUA);
+        comboLocales.getItems().add(langRU);
+        comboLocales.getItems().add(langEN);
+
+        if (LocaleManager.getCurrentLang() == null){// по-умолчанию показывать выбранный русский язык (можно текущие настройки языка сохранять в файл)
+            comboLocales.getSelectionModel().select(0);
+        }else{
+            comboLocales.getSelectionModel().select(LocaleManager.getCurrentLang().getIndex());
+        }
+    }
+
     private void initListeners() {
+        // слушает изменения в коллекции для обновления надписи "Кол-во записей"
         repository.getPersonList().addListener(new ListChangeListener<Person>() {
             @Override
             public void onChanged(Change<? extends Person> c) {
@@ -102,7 +133,7 @@ public class MainController implements Initializable {
             }
         });
 
-
+        // слушает двойное нажатие для редактирования записи
         tableAddressBook.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -113,7 +144,18 @@ public class MainController implements Initializable {
             }
         });
 
+        // слушает изменение языка
+        comboLocales.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Lang selectedLang = (Lang) comboLocales.getSelectionModel().getSelectedItem();
+                LocaleManager.setCurrentLang(selectedLang);
 
+                // уведомить всех слушателей, что произошла смена языка
+                setChanged();
+                notifyObservers(selectedLang);
+            }
+        });
     }
 
     private void initLoader() {
